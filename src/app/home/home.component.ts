@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { GenereatedClient } from '../api.generated';
 import { ToDo } from '../model/todo';
 import { TodoserviceService } from '../todoservice.service';
 
@@ -12,14 +10,11 @@ import { TodoserviceService } from '../todoservice.service';
 })
 export class MyHomeComponent implements OnInit {
   incompleteTodos$: Observable<ToDo[]>;
-  constructor(private todoService: TodoserviceService, private api: GenereatedClient) {}
+  constructor(private todoService: TodoserviceService) {}
   ngOnInit() {
     this.incompleteTodos$ = this.todoService.incompletedTodos$;
-
-    this.api
-      .companies_Get()
-      .pipe(filter(x => x !== null))
-      .subscribe(x => console.log(x[0].companyName));
+    // call the service and subcribe
+    this.todoService.getCompanies().subscribe(x => console.log(x));
   }
 
   addNewItem(itm: ToDo) {

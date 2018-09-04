@@ -1,5 +1,8 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Company } from './api.generated';
 import { ToDo } from './model/todo';
 
 @Injectable({
@@ -16,7 +19,7 @@ export class TodoserviceService {
   public readonly incompletedTodos$: Observable<ToDo[]> = this.incompletedSubject.asObservable();
 
   private todos: ToDo[];
-  constructor() {
+  constructor(private httpClient: HttpClient) {
     // initialize some fake data
     this.todos = [
       {
@@ -25,6 +28,35 @@ export class TodoserviceService {
       }
     ];
     this.publishEvents();
+  }
+
+  getCompanies(): Observable<Company> {
+    return this.httpClient.get<Company>('http://localhost:5000/api/Companies').pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+    }
+    // return an observable with a user-facing error message
+    return throwError('Something bad happened; please try again later.');
+  }
+
+  createCompany(data: Company): Observable<Company> {
+    return this.httpClient.post<Company>('http://localhost:5000/api/Companies', data).pipe(catchError(this.handleError));
+  }
+
+  deleteCompany(id: number): Observable<void> {
+    return this.httpClient.delete<void>('http://localhost:5000/api/Companies/' + id).pipe(catchError(this.handleError));
+  }
+
+  putCompany(id: number, data: Company): Observable<Company> {
+    return this.httpClient.put<Company>('http://localhost:5000/api/Companies/' + id, data).pipe(catchError(this.handleError));
   }
 
   addNew(itm: ToDo) {
