@@ -1,0 +1,6 @@
+<br>
+<app-addnewtodoinput (newItemAdded)="addNewItem($event)"></app-addnewtodoinput>
+<br>
+<app-todolist [todolist]="incompleteTodos$ | async" (completeItem)="markItemAsCompleted($event)"></app-todolist>
+
+<button (click)="markAllCompleted()" *ngIf="(incompleteTodos$ | async)?.length > 0">Complete All</button>

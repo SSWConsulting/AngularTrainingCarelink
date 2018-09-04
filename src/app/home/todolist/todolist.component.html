@@ -1,0 +1,4 @@
+<ol>
+  <li *ngFor="let item of todolist">{{item.description}}
+    <input type="checkbox" [checked]="item.completed" (change)="markAsCompleted(item)" /></li>
+</ol>

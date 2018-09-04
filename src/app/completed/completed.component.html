@@ -1,0 +1,4 @@
+<ol>
+  <li *ngFor="let item of todos$ | async"><span class="completed">{{item.description}}</span>
+    <input type="checkbox" [checked]="item.completed" (change)="markAsIncomplete(item)" /></li>
+</ol>
